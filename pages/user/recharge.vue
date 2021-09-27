@@ -53,6 +53,8 @@
 </template>
 <!--充值-->
 <script>
+import cookie from "js-cookie";
+
 export default {
   data() {
     return {
@@ -62,7 +64,21 @@ export default {
 
   methods: {
     commitCharge() {
-      console.log('this1', this)
+      //判断cookie中是否存有用户信息
+      let userInfo = cookie.get('userInfo')
+      if (!userInfo) {
+        this.$message.warning('请先登录！')
+        return
+      }
+      if(!userInfo.bindStatus || userInfo.bindStatus !== 1){
+        this.$message.warning('请先绑定第三方账户！')
+        setTimeout(()=>{
+          window.location.href = '/user'
+        }, 4000)
+        return
+      }
+
+
       let _this = this
       if(this.chargeAmt < 100){
         return this.$message.error("充值金额最低100")

@@ -49,6 +49,8 @@
   </div>
 </template>
 <script>
+import cookie from "js-cookie";
+
 export default {
   data() {
     return {
@@ -58,6 +60,20 @@ export default {
 
   methods: {
     commitWithdraw() {
+      //判断cookie中是否存有用户信息
+      let userInfo = cookie.get('userInfo')
+      if (!userInfo) {
+        this.$message.warning('请先登录！')
+        return
+      }
+      if(!userInfo.bindStatus || userInfo.bindStatus !== 1){
+        this.$message.warning('请先绑定第三方账户！')
+        setTimeout(()=>{
+          window.location.href = '/user'
+        }, 4000)
+        return
+      }
+
       this.$alert(
         '<div style="size: 18px;color: red;">您即将前往汇付宝提现</div>',
         '前往汇付宝资金托管平台',
